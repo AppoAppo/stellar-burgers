@@ -19,6 +19,7 @@ export const orderBurger = createAsyncThunk(
   async (ingredients: string[], { rejectWithValue }) => {
     try {
       const data = await orderBurgerApi(ingredients);
+      // clearConstructor();
       return data.order;
     } catch (error) {
       return rejectWithValue((error as Error).message);

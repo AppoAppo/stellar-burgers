@@ -38,6 +38,7 @@ const App = () => {
       .finally(() => dispatch(userActions.setUserChecked()));
   }, [dispatch]);
 
+  const handleModalClose = () => navigate(-1);
   const location = useLocation();
   const state = (location.state as { background?: Location }) || null;
   const background = state && state.background;
@@ -129,7 +130,7 @@ const App = () => {
             element={
               <Modal
                 title={`#${orderNumber && orderNumber.padStart(6, '0')}`}
-                onClose={() => navigate(-1)}
+                onClose={handleModalClose}
               >
                 <OrderInfo />
               </Modal>
@@ -139,7 +140,7 @@ const App = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title='Детали ингредиента' onClose={() => navigate(-1)}>
+              <Modal title='Детали ингредиента' onClose={handleModalClose}>
                 <IngredientDetails />
               </Modal>
             }
@@ -151,7 +152,7 @@ const App = () => {
               <ProtectedRoute>
                 <Modal
                   title={`#${orderNumber && orderNumber.padStart(6, '0')}`}
-                  onClose={() => navigate(-1)}
+                  onClose={handleModalClose}
                 >
                   <OrderInfo />
                 </Modal>
