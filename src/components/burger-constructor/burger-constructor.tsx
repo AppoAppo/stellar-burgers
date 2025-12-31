@@ -4,8 +4,8 @@ import { BurgerConstructorUI } from '@ui';
 import { useDispatch, useSelector } from '../../services/store';
 import {
   selectBuns,
-  selectConstructorIngredients,
-  clearConstructor
+  selectConstructorIngredients
+  // clearConstructor
 } from '../../services/slices/constructor';
 import {
   orderBurger,
@@ -42,12 +42,7 @@ export const BurgerConstructor: FC = () => {
       ...constructorItems.ingredients.map((ing) => ing._id),
       constructorItems.bun._id
     ];
-    dispatch(orderBurger(ingredientIds))
-      .unwrap()
-      .then(() => {
-        dispatch(clearConstructor());
-      })
-      .catch(() => {});
+    dispatch(orderBurger(ingredientIds));
   };
 
   const closeOrderModal = () => {

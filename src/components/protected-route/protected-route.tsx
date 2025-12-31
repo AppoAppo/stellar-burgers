@@ -15,7 +15,7 @@ export const ProtectedRoute = ({
   children
 }: ProtectedRouteProps) => {
   const isUserChecked = useSelector(selectIsUserChecked);
-  const isAuth = selectIsAuth;
+  const isAuth = useSelector(selectIsAuth);
   const isUserAuth = Boolean(getCookie('accessToken')) && isAuth;
   const location = useLocation();
   const from = location.state?.from || { pathname: '/' };
