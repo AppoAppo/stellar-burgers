@@ -27,10 +27,11 @@ describe('Срез feed (extraReducers)', () => {
   const mockUserOrders = [{ _id: '2', number: 67890 } as TOrder];
   const mockOrder = { _id: '3', number: 11111 } as TOrder;
   const errorMessage = 'Ошибка сети';
+  const request = 'request-1';
 
   describe('fetchFeed', () => {
     it('pending - должен установить флаг загрузки и очистить ошибку', () => {
-      const action = fetchFeed.pending('request-1');
+      const action = fetchFeed.pending(request);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(true);
@@ -38,7 +39,7 @@ describe('Срез feed (extraReducers)', () => {
     });
 
     it('fulfilled - должен сохранить данные ленты заказов и сбросить загрузку', () => {
-      const action = fetchFeed.fulfilled(mockFeedData, 'request-1');
+      const action = fetchFeed.fulfilled(mockFeedData, request);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(false);
@@ -49,12 +50,7 @@ describe('Срез feed (extraReducers)', () => {
     });
 
     it('rejected - должен записать ошибку и сбросить флаг загрузки', () => {
-      const action = fetchFeed.rejected(
-        null,
-        'request-1',
-        undefined,
-        errorMessage
-      );
+      const action = fetchFeed.rejected(null, request, undefined, errorMessage);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(false);
@@ -67,7 +63,7 @@ describe('Срез feed (extraReducers)', () => {
 
   describe('fetchUserOrders', () => {
     it('pending - должен установить флаг загрузки и очистить ошибку', () => {
-      const action = fetchUserOrders.pending('request-1');
+      const action = fetchUserOrders.pending(request);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(true);
@@ -75,7 +71,7 @@ describe('Срез feed (extraReducers)', () => {
     });
 
     it('fulfilled - должен сохранить заказы пользователя и сбросить загрузку', () => {
-      const action = fetchUserOrders.fulfilled(mockUserOrders, 'request-1');
+      const action = fetchUserOrders.fulfilled(mockUserOrders, request);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(false);
@@ -86,7 +82,7 @@ describe('Срез feed (extraReducers)', () => {
     it('rejected - должен записать ошибку и сбросить флаг загрузки', () => {
       const action = fetchUserOrders.rejected(
         null,
-        'request-1',
+        request,
         undefined,
         errorMessage
       );
@@ -100,7 +96,7 @@ describe('Срез feed (extraReducers)', () => {
 
   describe('fetchOrderByNumber', () => {
     it('pending - должен установить флаг загрузки и очистить ошибку', () => {
-      const action = fetchOrderByNumber.pending('request-1', 12345);
+      const action = fetchOrderByNumber.pending(request, 12345);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(true);
@@ -108,11 +104,7 @@ describe('Срез feed (extraReducers)', () => {
     });
 
     it('fulfilled - должен сохранить данные конкретного заказа и сбросить загрузку', () => {
-      const action = fetchOrderByNumber.fulfilled(
-        mockOrder,
-        'request-1',
-        11111
-      );
+      const action = fetchOrderByNumber.fulfilled(mockOrder, request, 11111);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(false);
@@ -123,7 +115,7 @@ describe('Срез feed (extraReducers)', () => {
     it('rejected - должен записать ошибку и сбросить флаг загрузки', () => {
       const action = fetchOrderByNumber.rejected(
         null,
-        'request-1',
+        request,
         99999,
         errorMessage
       );

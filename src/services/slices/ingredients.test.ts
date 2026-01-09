@@ -33,9 +33,10 @@ describe('ingredients reducer', () => {
   ];
 
   const initialState = undefined; // reducer сам вернёт initialState
+  const request = 'request-1';
 
   it('pending: должен установить isLoading = true', () => {
-    const action = fetchIngredients.pending('request-1');
+    const action = fetchIngredients.pending(request);
     const state = reducer(initialState, action);
 
     expect(state.isLoading).toBe(true);
@@ -43,7 +44,7 @@ describe('ingredients reducer', () => {
   });
 
   it('fulfilled: должен сохранить ингредиенты и сбросить loading/ошибку', () => {
-    const action = fetchIngredients.fulfilled(mockIngredients, 'request-1');
+    const action = fetchIngredients.fulfilled(mockIngredients, request);
     const state = reducer(initialState, action);
 
     expect(state.isLoading).toBe(false);
@@ -55,7 +56,7 @@ describe('ingredients reducer', () => {
     const errorMessage = 'Не удалось получить ингредиенты';
     const action = fetchIngredients.rejected(
       null,
-      'request-1',
+      request,
       undefined,
       errorMessage
     );

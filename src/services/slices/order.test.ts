@@ -19,10 +19,11 @@ describe('Срез заказа', () => {
   };
 
   const errorMessage = 'Не удалось оформить заказ';
+  const request = 'request-1';
 
   describe('orderBurger', () => {
     it('pending - должен установить флаг загрузки', () => {
-      const action = orderBurger.pending('request-1', [
+      const action = orderBurger.pending(request, [
         'Ингредиент 1',
         'Ингредиент 2'
       ]);
@@ -34,7 +35,7 @@ describe('Срез заказа', () => {
     });
 
     it('fulfilled - должен сохранить полученный заказ', () => {
-      const action = orderBurger.fulfilled(mockOrder, 'request-1', [
+      const action = orderBurger.fulfilled(mockOrder, request, [
         'Ингредиент 1',
         'Ингредиент 2'
       ]);
@@ -48,7 +49,7 @@ describe('Срез заказа', () => {
     it('rejected - должен записать ошибку', () => {
       const action = orderBurger.rejected(
         null,
-        'request-1',
+        request,
         ['Ингредиент 1', 'Ингредиент 2'],
         errorMessage
       );

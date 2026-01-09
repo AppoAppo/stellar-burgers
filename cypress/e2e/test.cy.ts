@@ -1,47 +1,43 @@
+import { SELECTORS } from 'cypress/constants/selectors';
 describe('Добавление ингредиентов в конструктор', function () {
   beforeEach(function () {
     cy.intercept('GET', '/api/ingredients', { fixture: 'ingredients.json' });
-    cy.visit('http://localhost:4000');
+    cy.visit('/');
   });
 
   it('Добавление булки в конструктор', function () {
-    cy.get('[data-cy=bun-ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=constructor-bun-top]').contains('Булка 1').should('exist');
-    cy.get('[data-cy=constructor-bun-bottom]')
-      .contains('Булка 1')
-      .should('exist');
+    cy.get(SELECTORS.bunIngredients).contains(SELECTORS.addButton).click();
+    cy.get(SELECTORS.constructorBunTop).contains('Булка 1').should('exist');
+    cy.get(SELECTORS.constructorBunBottom).contains('Булка 1').should('exist');
   });
 
   it('Добавление ингредиентов в конструктор', function () {
-    cy.get('[data-cy=main-ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=sauce-ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=constructor-ingredients]')
-      .contains('Котлета 1')
-      .should('exist');
-    cy.get('[data-cy=constructor-ingredients]')
-      .contains('Соус 1')
-      .should('exist');
+    cy.get(SELECTORS.mainIngredients).contains(SELECTORS.addButton).click();
+    cy.get(SELECTORS.sauceIngredients).contains(SELECTORS.addButton).click();
+    cy.get(SELECTORS.constructorIngredients).as('constructorIngredients');
+    cy.get('@constructorIngredients').contains('Котлета 1').should('exist');
+    cy.get('@constructorIngredients').contains('Соус 1').should('exist');
   });
 });
 
 describe('Работа модального окна ингредиентов', function () {
   beforeEach(function () {
     cy.intercept('GET', '/api/ingredients', { fixture: 'ingredients.json' });
-    cy.visit('http://localhost:4000');
+    cy.visit('/');
   });
 
   it('Открытие модального окна ингредиента', function () {
-    cy.contains('Детали ингредиента').should('not.exist');
+    cy.contains(SELECTORS.ingredientDetailsTitle).should('not.exist');
     cy.contains('Булка 1').click();
-    cy.contains('Детали ингредиента').should('exist');
-    cy.get('#modals').contains('Булка 1').should('exist');
+    cy.contains(SELECTORS.ingredientDetailsTitle).should('exist');
+    cy.get(SELECTORS.modalContainer).contains('Булка 1').should('exist');
   });
 
   it('Закрытие модального окна ингредиента', function () {
     cy.contains('Булка 1').click();
-    cy.contains('Детали ингредиента').should('exist');
-    cy.get('#modals button[aria-label="Закрыть"]').click();
-    cy.contains('Детали ингредиента').should('not.exist');
+    cy.contains(SELECTORS.ingredientDetailsTitle).should('exist');
+    cy.get(SELECTORS.closeModalButton).click();
+    cy.contains(SELECTORS.ingredientDetailsTitle).should('not.exist');
   });
 });
 
@@ -55,7 +51,7 @@ describe('Проверка оформления заказа', function () {
 
     window.localStorage.setItem('refreshToken', 'test-refresh-token');
     cy.setCookie('accessToken', 'test-access-token');
-    cy.visit('http://localhost:4000');
+    cy.visit('/');
   });
 
   afterEach(function () {
@@ -63,10 +59,10 @@ describe('Проверка оформления заказа', function () {
     cy.clearCookies();
   });
   it('Закрытие модального окна ингредиента', function () {
-    cy.get('[data-cy=bun-ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=main-ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=sauce-ingredients]').contains('Добавить').click();
-    cy.get('[data-cy=order-total] button').contains('Оформить заказ').click();
+    cy.get(SELECTORS.bunIngredients).contains(SELECTORS.addButton).click();
+    cy.get(SELECTORS.mainIngredients).contains(SELECTORS.addButton).click();
+    cy.get(SELECTORS.sauceIngredients).contains(SELECTORS.addButton).click();
+    cy.get(SELECTORS.orderButton).click();
 
     cy.wait('@postOrder')
       .its('request.body')
@@ -79,12 +75,13 @@ describe('Проверка оформления заказа', function () {
         ]
       });
 
-    cy.get('[data-cy=order-number]').contains('80126').should('exist');
-    cy.get('#modals button[aria-label="Закрыть"]').click();
-    cy.get('[data-cy=order-number]').should('not.exist');
+    cy.get(SELECTORS.orderNumber).contains('80126').should('exist');
+    cy.get(SELECTORS.closeModalButton).click();
+    cy.get(SELECTORS.orderNumber).should('not.exist');
 
-    cy.get('[data-cy=constructor]').contains('Булка 1').should('not.exist');
-    cy.get('[data-cy=constructor]').contains('Котлета 1').should('not.exist');
-    cy.get('[data-cy=constructor]').contains('Соус 1').should('not.exist');
+    cy.get(SELECTORS.constructorContainer).as('constructorContainer');
+    cy.get('@constructorContainer').contains('Булка 1').should('not.exist');
+    cy.get('@constructorContainer').contains('Котлета 1').should('not.exist');
+    cy.get('@constructorContainer').contains('Соус 1').should('not.exist');
   });
 });

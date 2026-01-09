@@ -53,6 +53,7 @@ describe('Срез конструктора бургера', () => {
     buns: null,
     ingredients: []
   };
+  const request = 'request-1';
 
   it('должен корректно добавлять булочку', () => {
     const state = reducer(initialState, addIngredient(bun));
@@ -90,7 +91,7 @@ describe('Срез конструктора бургера', () => {
     let state = reducer(initialState, addIngredient(bun));
     state = reducer(state, addIngredient(sauce));
 
-    const action = orderBurger.fulfilled({} as TOrder, 'request-1', []);
+    const action = orderBurger.fulfilled({} as TOrder, request, []);
     state = reducer(state, action);
 
     expect(state.buns).toBeNull();

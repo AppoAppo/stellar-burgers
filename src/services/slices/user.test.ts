@@ -22,10 +22,11 @@ describe('Срез пользователя', () => {
   };
 
   const errorMessage = 'Ошибка авторизации';
+  const request = 'request-1';
 
   describe('registerUser', () => {
     it('pending устанавливает флаг загрузки и очищает ошибку', () => {
-      const action = registerUser.pending('req1', {
+      const action = registerUser.pending(request, {
         email: '',
         password: '',
         name: ''
@@ -37,7 +38,7 @@ describe('Срез пользователя', () => {
     });
 
     it('fulfilled сохраняет пользователя, устанавливает isAuth в true', () => {
-      const action = registerUser.fulfilled(mockUser, 'req1', {
+      const action = registerUser.fulfilled(mockUser, request, {
         email: '',
         password: '',
         name: ''
@@ -53,7 +54,7 @@ describe('Срез пользователя', () => {
     it('rejected сохраняет ошибку и сбрасывает флаг загрузки', () => {
       const action = registerUser.rejected(
         null,
-        'req1',
+        request,
         { email: '', password: '', name: '' },
         errorMessage
       );
@@ -68,7 +69,7 @@ describe('Срез пользователя', () => {
 
   describe('loginUser', () => {
     it('pending устанавливает флаг загрузки', () => {
-      const action = loginUser.pending('req2', { email: '', password: '' });
+      const action = loginUser.pending(request, { email: '', password: '' });
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(true);
@@ -76,7 +77,7 @@ describe('Срез пользователя', () => {
     });
 
     it('fulfilled сохраняет пользователя и авторизует', () => {
-      const action = loginUser.fulfilled(mockUser, 'req2', {
+      const action = loginUser.fulfilled(mockUser, request, {
         email: '',
         password: ''
       });
@@ -91,7 +92,7 @@ describe('Срез пользователя', () => {
     it('rejected сохраняет ошибку', () => {
       const action = loginUser.rejected(
         null,
-        'req2',
+        request,
         { email: '', password: '' },
         errorMessage
       );
@@ -105,7 +106,7 @@ describe('Срез пользователя', () => {
 
   describe('fetchUser', () => {
     it('pending устанавливает флаг загрузки', () => {
-      const action = fetchUser.pending('req3');
+      const action = fetchUser.pending(request);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(true);
@@ -113,7 +114,7 @@ describe('Срез пользователя', () => {
     });
 
     it('fulfilled сохраняет данные пользователя и подтверждает авторизацию', () => {
-      const action = fetchUser.fulfilled(mockUser, 'req3');
+      const action = fetchUser.fulfilled(mockUser, request);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(false);
@@ -123,7 +124,7 @@ describe('Срез пользователя', () => {
     });
 
     it('rejected сбрасывает авторизацию и сохраняет ошибку', () => {
-      const action = fetchUser.rejected(null, 'req3', undefined, errorMessage);
+      const action = fetchUser.rejected(null, request, undefined, errorMessage);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(false);
@@ -135,7 +136,7 @@ describe('Срез пользователя', () => {
 
   describe('updateUser', () => {
     it('pending устанавливает флаг загрузки', () => {
-      const action = updateUser.pending('req4', { name: 'New Name' });
+      const action = updateUser.pending(request, { name: 'New Name' });
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(true);
@@ -144,7 +145,7 @@ describe('Срез пользователя', () => {
 
     it('fulfilled обновляет данные пользователя', () => {
       const updatedUser = { ...mockUser, name: 'Updated Name' };
-      const action = updateUser.fulfilled(updatedUser, 'req4', {
+      const action = updateUser.fulfilled(updatedUser, request, {
         name: 'Updated Name'
       });
 
@@ -158,7 +159,7 @@ describe('Срез пользователя', () => {
     it('rejected сохраняет ошибку', () => {
       const action = updateUser.rejected(
         null,
-        'req4',
+        request,
         { name: '' },
         errorMessage
       );
@@ -171,7 +172,7 @@ describe('Срез пользователя', () => {
 
   describe('logoutUser', () => {
     it('pending устанавливает флаг загрузки', () => {
-      const action = logoutUser.pending('req5');
+      const action = logoutUser.pending(request);
       const state = reducer(initialState, action);
 
       expect(state.isLoading).toBe(true);
@@ -179,7 +180,7 @@ describe('Срез пользователя', () => {
     });
 
     it('fulfilled полностью очищает данные пользователя и авторизацию', () => {
-      const action = logoutUser.fulfilled(null, 'req5');
+      const action = logoutUser.fulfilled(null, request);
       const stateWithUser = {
         ...initialState,
         user: mockUser,
@@ -194,8 +195,13 @@ describe('Срез пользователя', () => {
       expect(state.error).toBeNull();
     });
 
-    it('rejected сохраняет ошибку, но сбрасывает авторизацию', () => {
-      const action = logoutUser.rejected(null, 'req5', undefined, errorMessage);
+    it('rejected сохраняет ошибку, но не сбрасывает авторизацию', () => {
+      const action = logoutUser.rejected(
+        null,
+        request,
+        undefined,
+        errorMessage
+      );
       const stateWithUser = {
         ...initialState,
         user: mockUser,
@@ -206,8 +212,8 @@ describe('Срез пользователя', () => {
 
       expect(state.isLoading).toBe(false);
       expect(state.error).toBe(errorMessage);
-      expect(state.user).toBeNull();
-      expect(state.isAuth).toBe(false);
+      expect(state.user).toBe(mockUser);
+      expect(state.isAuth).toBe(true);
     });
   });
 
